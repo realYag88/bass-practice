@@ -1,0 +1,1752 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ベース練習帳</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="ベース練習帳">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#16100c">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="manifest" href="manifest.webmanifest">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700&family=Nunito:wght@600;700;800&family=Shippori+Mincho+B1:wght@600;800&display=swap">
+<style>
+/* 筋トレログと同じ骨組み(下のタブ、角丸カード、下から出るシート)。色は火入れした木。 */
+:root {
+  --bg: #16100c;
+  --surface: #221811;
+  --surface-2: #2f2219;
+  --raise: #3a2a1e;
+  --fg: #efe3cf;
+  --muted: #a48d75;
+  --faint: #6c5847;
+  --track: #45342a;
+  --ember: #e2703a;
+  --ember-hi: #f08a4e;
+  --ember-soft: rgba(226, 112, 58, .16);
+  --moss: #9fae72;
+  --danger: #dc7b6c;
+  --scrim: rgba(8, 5, 3, .62);
+  --shadow: 0 10px 28px rgba(0, 0, 0, .45);
+  --edge: inset 0 1px 0 rgba(255, 228, 196, .05);
+  --font-ui: "Zen Maru Gothic", "Hiragino Maru Gothic ProN", "Hiragino Sans", sans-serif;
+  --font-num: "Nunito", "Zen Maru Gothic", "Hiragino Maru Gothic ProN", sans-serif;
+  --font-head: "Shippori Mincho B1", "Hiragino Mincho ProN", "Yu Mincho", serif;
+  --radius: 22px;
+  color-scheme: dark;
+}
+
+html, body { height: 100%; }
+body {
+  margin: 0;
+  color: var(--fg);
+  font-family: var(--font-ui);
+  font-size: 15px;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  overflow: hidden;
+  background-color: var(--bg);
+  /* 焼杉の木目(縦方向の細い筋)を薄く重ねる */
+  background-image:
+    radial-gradient(120% 70% at 50% 0%, rgba(226, 112, 58, .07), transparent 60%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='480' height='900'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.55 0.005' numOctaves='3' seed='11'/%3E%3CfeColorMatrix values='0 0 0 0 0.62 0 0 0 0 0.42 0 0 0 0 0.27 0 0 0 1.1 -0.35'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.16'/%3E%3C/svg%3E");
+  background-size: auto, 480px 900px;
+}
+:root { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); box-sizing: border-box; height: 100%; }
+button, input, textarea, select { font: inherit; color: inherit; }
+button { cursor: pointer; }
+a { color: inherit; }
+button:focus-visible, input:focus-visible, textarea:focus-visible, a:focus-visible {
+  outline: 3px solid var(--ember);
+  outline-offset: 2px;
+}
+[hidden] { display: none !important; }
+.num { font-family: var(--font-num); font-variant-numeric: tabular-nums; }
+
+.app {
+  height: 100%;
+  max-width: 520px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+.view {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-inline: 16px;
+  padding-block: 12px 28px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Header */
+.top { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px; }
+.brand-wrap { display: flex; flex-direction: column; min-width: 0; }
+.brand-wrap.grow { flex: 1; }
+.brand { font-family: var(--font-head); font-weight: 800; font-size: 19px; letter-spacing: .08em; white-space: nowrap; }
+.sub { color: var(--muted); font-size: 13px; font-weight: 600; }
+.top-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+
+.icon-btn {
+  width: 44px; height: 44px; flex-shrink: 0;
+  border: none; border-radius: 50%;
+  background: var(--surface-2);
+  box-shadow: var(--edge), 0 4px 14px rgba(0, 0, 0, .35);
+  display: grid; place-items: center;
+  font-family: var(--font-num); font-weight: 800; font-size: 14px;
+}
+.icon-btn svg { width: 22px; height: 22px; stroke: var(--fg); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.icon-btn.sm { width: 36px; height: 36px; }
+.icon-btn.sm svg { width: 18px; height: 18px; stroke: var(--muted); }
+.icon-btn:active, .btn:active, .play-btn:active, .chip-btn:active { transform: scale(.97); }
+
+.btn {
+  flex: 1;
+  min-height: 50px;
+  border: none; border-radius: 999px;
+  background: var(--surface-2);
+  box-shadow: var(--edge);
+  font-weight: 700; font-size: 15px;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 0 18px;
+  text-decoration: none;
+}
+.btn svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+.btn.done { background: var(--ember); color: #1a0f08; box-shadow: 0 6px 20px rgba(226, 112, 58, .28); }
+.btn:disabled { opacity: .45; cursor: default; }
+.chip-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  min-height: 36px; padding: 0 14px;
+  border: none; border-radius: 999px;
+  background: var(--surface-2);
+  box-shadow: var(--edge);
+  font-weight: 700; font-size: 13px;
+  white-space: nowrap;
+  text-decoration: none;
+}
+.chip-btn svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.chip-btn .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--c); }
+.chip-btn .cnt { font-family: var(--font-num); font-weight: 800; color: var(--muted); font-size: 12px; }
+.chip-btn[aria-pressed="true"] { background: var(--fg); color: var(--bg); }
+.chip-btn[aria-pressed="true"] .cnt { color: var(--faint); }
+.chip-btn:disabled { opacity: .45; cursor: default; }
+.link-btn {
+  border: none; background: none; padding: 6px 0;
+  font-size: 13px; font-weight: 700; color: var(--muted);
+  text-decoration: underline; text-underline-offset: 3px;
+  display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;
+}
+.link-btn svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.add {
+  border: 2px dashed var(--track);
+  background: transparent;
+  border-radius: var(--radius);
+  min-height: 52px;
+  font-weight: 700;
+  color: var(--muted);
+}
+.card {
+  background: linear-gradient(180deg, rgba(255, 226, 190, .025), transparent 45%), var(--surface);
+  border: 1px solid rgba(0, 0, 0, .3);
+  box-shadow: var(--edge);
+  border-radius: var(--radius);
+  padding: 12px 14px 14px;
+  display: flex; flex-direction: column; gap: 10px;
+  min-width: 0;
+}
+.card h3 { margin: 0; font-size: 14px; color: var(--muted); letter-spacing: .06em; }
+.card p { margin: 0; font-size: 13.5px; line-height: 1.7; color: var(--muted); }
+.card-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.card .row-btns { display: flex; gap: 10px; flex-wrap: wrap; }
+.card .row-btns .btn { min-height: 46px; flex: 1 1 140px; }
+.tag {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  color: var(--muted);
+  font-size: 11px; font-weight: 700;
+  white-space: nowrap;
+}
+.tag.num { font-weight: 800; }
+.empty { margin: 0; padding: 18px 8px; text-align: center; color: var(--muted); font-size: 14px; line-height: 1.7; }
+.empty.small { padding: 10px 8px; font-size: 13px; }
+.clip { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.del {
+  width: 36px; height: 36px;
+  border: none; border-radius: 50%;
+  background: transparent;
+  color: var(--muted);
+  display: grid; place-items: center;
+  flex-shrink: 0;
+}
+.del svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.del:disabled { opacity: .25; cursor: default; }
+.confirm-del {
+  border: none; border-radius: 999px;
+  min-height: 44px; padding: 0 14px;
+  background: transparent; color: var(--muted);
+  font-weight: 700; font-size: 13px;
+  display: inline-flex; align-items: center; gap: 4px;
+  flex-shrink: 0;
+}
+.confirm-del svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.confirm-del.armed { background: var(--danger); color: #1a0f08; }
+
+/* Inputs */
+.text-input, .memo {
+  width: 100%;
+  box-sizing: border-box;
+  border: 2px solid var(--surface-2);
+  border-radius: 14px;
+  background: rgba(0, 0, 0, .25);
+  color: var(--fg);
+}
+.text-input { height: 46px; padding: 0 12px; font-size: 16px; }
+.memo { padding: 9px 12px; font-size: 15px; line-height: 1.6; resize: none; min-height: 44px; display: block; }
+.memo::placeholder, .text-input::placeholder { color: var(--faint); }
+.field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.field > span:first-child { font-size: 13px; font-weight: 700; color: var(--muted); }
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.input-with { display: flex; gap: 8px; }
+.input-with .text-input { flex: 1; min-width: 0; }
+.input-with .chip-btn { min-height: 46px; }
+input[type="range"] { accent-color: var(--ember); width: 100%; margin: 0; }
+
+/* Segmented */
+.seg { display: flex; gap: 4px; background: rgba(0, 0, 0, .28); border-radius: 999px; padding: 4px; }
+.seg button {
+  flex: 1; min-height: 38px; border: none; border-radius: 999px;
+  background: transparent; color: var(--muted);
+  font-weight: 700; font-size: 14px;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+}
+.seg button .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--c); }
+.seg button[aria-pressed="true"] { background: var(--raise); color: var(--fg); box-shadow: var(--edge); }
+
+/* 曲リスト */
+.chip-row { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 2px; margin-inline: -16px; padding-inline: 16px; scrollbar-width: none; }
+.chip-row::-webkit-scrollbar { display: none; }
+.chip-wrap { display: flex; gap: 8px; flex-wrap: wrap; }
+.list { display: grid; gap: 10px; }
+.song, .drill {
+  display: grid; grid-template-columns: 76px minmax(0, 1fr) auto; align-items: center; gap: 12px;
+  border: 1px solid rgba(0, 0, 0, .3);
+  border-radius: 18px;
+  padding: 8px 12px 8px 8px;
+  background: linear-gradient(180deg, rgba(255, 226, 190, .025), transparent 50%), var(--surface);
+  box-shadow: var(--edge);
+  text-align: left;
+  min-width: 0;
+}
+.song:active, .drill:active { background: var(--surface-2); }
+.thumb {
+  width: 76px; aspect-ratio: 16 / 10; border-radius: 12px; overflow: hidden;
+  background: var(--surface-2); display: grid; place-items: center;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .35);
+}
+.thumb img { width: 100%; height: 100%; object-fit: cover; display: block; filter: saturate(.8) sepia(.18) brightness(.9); }
+.thumb svg { width: 24px; height: 24px; stroke: var(--faint); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.song-body { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.song-title { font-family: var(--font-head); font-weight: 800; font-size: 16px; line-height: 1.35; overflow-wrap: anywhere; }
+.song-body small { color: var(--muted); font-size: 12.5px; font-weight: 700; }
+.song-meta { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 2px; }
+.status-pill {
+  font-size: 11.5px; font-weight: 700; color: var(--c);
+  border: 1.5px solid var(--c); border-radius: 999px; padding: 2px 9px; white-space: nowrap;
+}
+.drill .chev svg { width: 18px; height: 18px; stroke: var(--faint); fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+
+/* 基礎練 */
+.cats { display: flex; flex-direction: column; gap: 22px; }
+.cat { display: flex; flex-direction: column; gap: 8px; }
+.cat-head { display: flex; align-items: center; gap: 8px; padding-inline: 4px; }
+.cat-head h2 { margin: 0; font-family: var(--font-head); font-size: 17px; font-weight: 800; letter-spacing: .06em; }
+.cat-head .sub { flex: 1; }
+.cat-head::before { content: ""; width: 4px; height: 16px; border-radius: 2px; background: var(--ember); }
+.cat-row { display: flex; align-items: center; gap: 6px; }
+.cat-row .text-input { flex: 1; }
+
+/* 詳細 */
+.d-title { font-family: var(--font-head); font-weight: 800; font-size: 19px; line-height: 1.3; overflow-wrap: anywhere; }
+.detail-grid { display: grid; gap: 14px; }
+.col { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.player-card { padding: 10px; gap: 8px; }
+.frame {
+  position: relative; width: 100%; aspect-ratio: 16 / 9;
+  border-radius: 14px; overflow: hidden; background: #000;
+  box-shadow: inset 0 0 0 1px rgba(255, 226, 190, .06);
+}
+.frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.frame-msg {
+  position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
+  color: var(--muted); font-size: 13.5px; font-weight: 700; text-align: center; padding: 16px; line-height: 1.7;
+  background: radial-gradient(80% 80% at 50% 50%, #241810, #0d0806);
+}
+.frame-foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding-inline: 4px; min-height: 28px; }
+.frame-note { margin: 0; color: var(--danger); font-size: 13px; font-weight: 700; line-height: 1.6; padding-inline: 4px; }
+.vchips { margin-inline: -10px; padding-inline: 10px; }
+
+.time-row { display: flex; align-items: baseline; gap: 8px; }
+.time-row b { font-size: 26px; font-weight: 800; letter-spacing: .02em; }
+.time-row .sub { font-family: var(--font-num); font-weight: 700; }
+.rate-tag { margin-left: auto; font-weight: 800; color: var(--ember); font-size: 14px; }
+.timeline {
+  position: relative; height: 34px; border-radius: 10px;
+  background: rgba(0, 0, 0, .35);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, .5);
+  cursor: pointer; touch-action: none;
+  overflow: hidden;
+}
+.tl-fill { position: absolute; left: 0; top: 0; bottom: 0; width: 0; background: rgba(239, 227, 207, .07); }
+.tl-region { position: absolute; top: 0; bottom: 0; background: var(--ember-soft); border-inline: 2px solid var(--ember); }
+.tl-region.on { background: rgba(226, 112, 58, .3); }
+.tl-head { position: absolute; top: 0; bottom: 0; width: 2px; margin-left: -1px; background: var(--fg); left: 0; box-shadow: 0 0 6px rgba(239, 227, 207, .6); }
+.tl-mark { position: absolute; top: 2px; font-family: var(--font-num); font-size: 10px; font-weight: 800; color: var(--ember); transform: translateX(3px); }
+.tl-mark.b { transform: translateX(calc(-100% - 3px)); }
+.transport { display: grid; grid-template-columns: 52px 64px 52px; justify-content: center; align-items: center; gap: 18px; }
+.transport .icon-btn { width: 52px; height: 52px; }
+.play-btn {
+  width: 64px; height: 64px; border: none; border-radius: 50%;
+  background: var(--ember); display: grid; place-items: center;
+  box-shadow: 0 6px 22px rgba(226, 112, 58, .35), inset 0 1px 0 rgba(255, 220, 190, .3);
+}
+.play-btn svg { width: 26px; height: 26px; fill: #1a0f08; stroke: none; }
+.ab-grid { display: flex; flex-direction: column; gap: 8px; }
+.ab { display: grid; grid-template-columns: 28px minmax(0, 1fr) 52px 52px auto; align-items: center; gap: 6px; }
+.ab-tag {
+  width: 28px; height: 28px; border-radius: 8px; display: grid; place-items: center;
+  font-family: var(--font-num); font-weight: 800; font-size: 14px;
+  background: var(--ember-soft); color: var(--ember);
+}
+.ab-val { font-size: 19px; font-weight: 800; }
+.nudge {
+  min-height: 38px; border: none; border-radius: 12px; background: var(--surface-2); box-shadow: var(--edge);
+  font-family: var(--font-num); font-weight: 800; font-size: 13px; color: var(--muted);
+}
+.nudge:disabled, .ab .chip-btn:disabled { opacity: .35; }
+.ab .chip-btn { min-height: 38px; padding: 0 12px; }
+.loop-actions { display: flex; gap: 10px; }
+.loop-actions .btn { min-height: 48px; }
+.loop-btn[aria-pressed="true"] { background: var(--ember); color: #1a0f08; box-shadow: 0 6px 20px rgba(226, 112, 58, .3); }
+.speed { display: flex; align-items: center; gap: 10px; }
+.speed .lbl { font-size: 13px; font-weight: 700; color: var(--muted); flex-shrink: 0; }
+.speed .seg { flex: 1; }
+.speed .seg button { font-family: var(--font-num); font-weight: 800; }
+
+.marks { display: flex; flex-direction: column; gap: 6px; }
+.mark { display: flex; align-items: center; gap: 4px; background: rgba(0, 0, 0, .22); border-radius: 14px; border: 1.5px solid transparent; }
+.mark.on { border-color: var(--ember); background: var(--ember-soft); }
+.mark-main {
+  flex: 1; min-width: 0; min-height: 48px; border: none; background: transparent; text-align: left;
+  display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 0 4px 0 12px;
+}
+.mark-main b { font-size: 15px; overflow-wrap: anywhere; }
+.mark-main .sub { font-family: var(--font-num); font-weight: 700; white-space: nowrap; }
+
+.info-row { display: flex; align-items: center; gap: 10px; min-height: 40px; }
+.info-row .lbl { width: 54px; flex-shrink: 0; font-size: 13px; font-weight: 700; color: var(--muted); }
+.info-row .val { flex: 1; min-width: 0; font-weight: 700; font-size: 16px; }
+.info-row .val.num { font-weight: 800; font-size: 20px; }
+.info-row .val.none { color: var(--faint); font-size: 14px; font-weight: 700; }
+.metro-mini[aria-pressed="true"] { background: var(--ember); color: #1a0f08; }
+.beat-mini { width: 8px; height: 8px; border-radius: 50%; background: currentColor; opacity: .35; transition: opacity .08s; }
+.beat-mini.lit { opacity: 1; }
+
+.vlist { display: flex; flex-direction: column; gap: 6px; }
+.vrow { display: flex; align-items: center; gap: 4px; border-radius: 14px; border: 1.5px solid transparent; background: rgba(0, 0, 0, .22); }
+.vrow.on { border-color: var(--track); background: var(--surface-2); }
+.vrow-main {
+  flex: 1; min-width: 0; border: none; background: transparent; text-align: left;
+  display: grid; grid-template-columns: 64px minmax(0, 1fr); align-items: center; gap: 10px; padding: 6px;
+}
+.vrow-main .thumb { width: 64px; }
+.vrow-main span:last-child { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.vrow-main b { font-size: 14px; }
+.vrow-main small { font-size: 12px; color: var(--muted); font-weight: 600; }
+
+/* メトロノーム */
+.metro-wrap { display: flex; flex-direction: column; gap: 14px; width: 100%; max-width: 520px; margin: 0 auto; }
+.plate { align-items: stretch; gap: 16px; padding: 18px 16px; }
+.beats { display: flex; justify-content: center; gap: 12px; min-height: 18px; }
+.beat-dot { width: 16px; height: 16px; border-radius: 50%; background: var(--track); box-shadow: inset 0 1px 2px rgba(0, 0, 0, .5); transition: background .06s, box-shadow .06s; }
+.beat-dot.first { width: 18px; height: 18px; }
+.beat-dot.lit { background: var(--ember-hi); box-shadow: 0 0 14px rgba(240, 138, 78, .8); }
+.bpm-big { display: flex; align-items: baseline; justify-content: center; gap: 8px; }
+.bpm-big b { font-family: var(--font-num); font-weight: 800; font-size: 76px; line-height: 1; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.bpm-big span { font-family: var(--font-num); font-weight: 800; color: var(--muted); font-size: 15px; letter-spacing: .1em; }
+.bpm-row { display: grid; grid-template-columns: 52px minmax(0, 1fr) 52px; align-items: center; gap: 12px; }
+.bpm-row .icon-btn { width: 52px; height: 52px; font-size: 22px; }
+.plate .row-btns .btn { min-height: 56px; font-size: 16px; }
+.btn.running { background: var(--fg); color: var(--bg); box-shadow: none; }
+.opt { display: flex; flex-direction: column; gap: 8px; }
+.opt .seg button { font-family: var(--font-num); font-weight: 800; }
+.vol-row { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 12px; }
+.vol-row svg { width: 20px; height: 20px; stroke: var(--muted); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.pick-group { font-size: 12px; font-weight: 700; color: var(--muted); margin: 2px 0 0 2px; }
+
+/* データ */
+.stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.stat { background: var(--surface); border-radius: 18px; padding: 10px 8px; text-align: center; display: flex; flex-direction: column; gap: 2px; box-shadow: var(--edge); }
+.stat b { font-family: var(--font-num); font-weight: 800; font-size: 22px; font-variant-numeric: tabular-nums; }
+.stat span { font-size: 11.5px; color: var(--muted); font-weight: 700; }
+.file-label { position: relative; overflow: hidden; }
+.file-label input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+.import-preview { background: rgba(0, 0, 0, .25); border-radius: 16px; padding: 10px 12px; display: flex; flex-direction: column; gap: 8px; }
+.import-preview b { font-size: 14px; }
+.copy-area { width: 100%; height: 120px; box-sizing: border-box; font-family: ui-monospace, Menlo, monospace; font-size: 11px; border: 2px solid var(--surface-2); border-radius: 14px; background: rgba(0, 0, 0, .3); color: var(--fg); padding: 8px; }
+
+/* Tab bar */
+.tabs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 2px;
+  padding: 6px 8px 8px;
+  background: linear-gradient(180deg, #2a1e15, var(--surface));
+  border-radius: 24px 24px 0 0;
+  box-shadow: 0 -8px 26px rgba(0, 0, 0, .45), var(--edge);
+  flex-shrink: 0;
+}
+.tab {
+  border: none; background: transparent;
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  padding: 4px 0;
+  color: var(--muted);
+  font-size: 11px; font-weight: 700;
+}
+.tab .ic { width: 52px; height: 30px; border-radius: 999px; display: grid; place-items: center; transition: background .2s; }
+.tab svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.tab[aria-selected="true"] { color: var(--fg); }
+.tab[aria-selected="true"] .ic { background: var(--ember-soft); color: var(--ember); }
+
+/* Sheet */
+.scrim {
+  position: fixed; inset: 0;
+  background: var(--scrim);
+  display: flex; align-items: flex-end; justify-content: center;
+  z-index: 10;
+}
+.sheet {
+  width: 100%;
+  max-width: 520px;
+  max-height: 88%;
+  overflow-y: auto;
+  box-sizing: border-box;
+  background: var(--bg);
+  border-top: 1px solid rgba(255, 226, 190, .06);
+  border-radius: 30px 30px 0 0;
+  padding-inline: 16px;
+  padding-block: 10px calc(18px + env(safe-area-inset-bottom, 0px));
+  display: flex; flex-direction: column; gap: 14px;
+  animation: up .28s ease-out;
+}
+@keyframes up { from { transform: translateY(40px); opacity: .6; } to { transform: none; opacity: 1; } }
+.grab { width: 40px; height: 5px; border-radius: 3px; background: var(--track); margin: 0 auto; flex-shrink: 0; }
+.sheet h2 { margin: 0; font-family: var(--font-head); font-weight: 800; font-size: 19px; letter-spacing: .04em; }
+.sheet-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.sheet-actions { display: flex; gap: 10px; align-items: center; }
+.sheet-foot {
+  position: sticky;
+  bottom: calc(-18px - env(safe-area-inset-bottom, 0px));
+  background: var(--bg);
+  padding-block: 8px calc(18px + env(safe-area-inset-bottom, 0px));
+  margin-block: -6px calc(-18px - env(safe-area-inset-bottom, 0px));
+}
+.err { color: var(--danger); font-size: 13px; font-weight: 700; margin: -6px 0 0; }
+.hint { font-size: 12.5px; color: var(--muted); margin: -4px 0 0; line-height: 1.6; }
+.range-show { font-family: var(--font-num); font-weight: 800; font-size: 18px; color: var(--ember); }
+
+.toast {
+  position: fixed; left: 50%; bottom: calc(96px + env(safe-area-inset-bottom, 0px));
+  transform: translateX(-50%);
+  background: var(--fg); color: var(--bg);
+  padding: 10px 18px; border-radius: 999px;
+  font-weight: 700; font-size: 14px;
+  z-index: 20; max-width: calc(100% - 48px); text-align: center;
+  box-shadow: var(--shadow);
+}
+
+/* スマホでは動画をスクロールしても上に残す */
+@media (max-width: 899px) {
+  .detail-grid .col { display: contents; }
+  .player-card { position: sticky; top: -12px; z-index: 3; box-shadow: var(--edge), 0 10px 24px rgba(0, 0, 0, .55); }
+}
+/* PCは横に広く使う */
+@media (min-width: 900px) {
+  .app { max-width: 1120px; }
+  .view { padding-inline: 28px; padding-top: 20px; }
+  .tabs { width: 480px; align-self: center; box-sizing: border-box; }
+  .list.songs { grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); }
+  .cats { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 22px; align-items: start; }
+  .detail-grid { grid-template-columns: minmax(0, 1.6fr) minmax(320px, 1fr); align-items: start; }
+  .sheet { border-radius: 30px; margin-bottom: 4vh; max-height: 84%; }
+  .scrim { align-items: center; }
+}
+@media (max-width: 360px) {
+  .ab { grid-template-columns: 26px minmax(0, 1fr) 44px 44px auto; gap: 4px; }
+  .ab .chip-btn { padding: 0 9px; font-size: 12px; }
+  .bpm-big b { font-size: 64px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sheet { animation: none; }
+  .tab .ic, .beat-dot, .beat-mini { transition: none; }
+}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+
+  <!-- 曲 -->
+  <section class="view" id="v-songs" role="tabpanel" aria-labelledby="t-songs">
+    <header class="top">
+      <div class="brand-wrap"><span class="brand">ベース練習帳</span><span class="sub" id="songSub">課題曲</span></div>
+      <div class="top-actions">@@GEAR@@</div>
+    </header>
+    <div class="chip-row" id="songFilter"></div>
+    <div class="list songs" id="songList"></div>
+    <button class="add" id="songAdd">＋ 曲を追加</button>
+  </section>
+
+  <!-- 基礎練 -->
+  <section class="view" id="v-drills" role="tabpanel" aria-labelledby="t-drills" hidden>
+    <header class="top">
+      <div class="brand-wrap"><span class="brand">基礎練</span><span class="sub" id="drillSub"></span></div>
+      <div class="top-actions">@@GEAR@@</div>
+    </header>
+    <div class="cats" id="drillList"></div>
+    <button class="link-btn" id="catEdit" style="align-self:center">カテゴリを編集</button>
+  </section>
+
+  <!-- メトロノーム -->
+  <section class="view" id="v-metro" role="tabpanel" aria-labelledby="t-metro" hidden>
+    <div class="metro-wrap">
+      <header class="top">
+        <div class="brand-wrap"><span class="brand">メトロノーム</span><span class="sub" id="mSub"></span></div>
+        <div class="top-actions">@@GEAR@@</div>
+      </header>
+      <div class="card plate">
+        <div class="beats" id="beatDots"></div>
+        <div class="bpm-big"><b id="bpmNum">100</b><span>BPM</span></div>
+        <div class="bpm-row">
+          <button class="icon-btn" id="bpmMinus" aria-label="BPMを下げる">−</button>
+          <input type="range" id="bpmRange" min="30" max="260" step="1" aria-label="BPM">
+          <button class="icon-btn" id="bpmPlus" aria-label="BPMを上げる">＋</button>
+        </div>
+        <div class="row-btns" style="display:flex;gap:10px">
+          <button class="btn" id="tapBtn">タップ</button>
+          <button class="btn done" id="mPlay"></button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="opt"><h3>拍子(1拍目が高い音)</h3><div class="seg" id="beatsSeg"></div></div>
+        <div class="opt"><h3>刻み</h3><div class="seg" id="subSeg"></div></div>
+        <div class="opt"><h3>音量</h3>
+          <div class="vol-row"><svg viewBox="0 0 24 24"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="M15.5 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11"/></svg><input type="range" id="volRange" min="0" max="100" step="1" aria-label="音量"></div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>曲・基礎練のBPMから</h3>
+        <div class="opt" id="bpmPicks"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 曲・基礎練の詳細(プレイヤー) -->
+  <section class="view" id="v-detail" hidden></section>
+
+  <nav class="tabs" role="tablist" aria-label="画面の切り替え">
+    <button class="tab" role="tab" id="t-songs" data-tab="songs" aria-controls="v-songs" aria-selected="true">
+      <span class="ic"><svg viewBox="0 0 24 24"><path d="M9 18V5.5l11-2v12.5"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg></span>曲
+    </button>
+    <button class="tab" role="tab" id="t-drills" data-tab="drills" aria-controls="v-drills" aria-selected="false">
+      <span class="ic"><svg viewBox="0 0 24 24"><path d="M3 7.5h18M3 11.5h18M3 15.5h18"/><path d="M8 4.5v14M15.5 4.5v14"/><circle cx="11.7" cy="13.5" r="1.2"/></svg></span>基礎練
+    </button>
+    <button class="tab" role="tab" id="t-metro" data-tab="metro" aria-controls="v-metro" aria-selected="false">
+      <span class="ic"><svg viewBox="0 0 24 24"><path d="M6.5 21h11L14 3.5h-4z"/><path d="M12 16.5l5-9"/><path d="M8.3 16.5h7.4"/></svg></span>メトロノーム
+    </button>
+  </nav>
+</div>
+
+<template id="settingsTpl">
+  <div class="sheet-head"><h2>設定・データ</h2><button class="del" data-close aria-label="閉じる"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <p class="hint">データはこのブラウザ(ホーム画面のアプリ)の中に保存されています。PCとスマホで移すときは、片方で書き出して、もう片方で読み込んでください。</p>
+  <div class="card">
+    <h3>書き出し</h3>
+    <p>課題曲・基礎練・ブックマーク・メトロノームの設定をJSONファイルに保存します。</p>
+    <p id="lastExport"></p>
+    <div class="row-btns">
+      <button class="btn done" id="exportBtn"><svg viewBox="0 0 24 24"><path d="M12 4v11"/><path d="M7 10l5 5 5-5"/><path d="M5 20h14"/></svg>書き出す</button>
+      <button class="btn" id="copyBtn"><svg viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/></svg>コピー</button>
+    </div>
+    <textarea class="copy-area" id="copyArea" readonly hidden aria-label="書き出したJSON"></textarea>
+  </div>
+  <div class="card">
+    <h3>読み込み</h3>
+    <p>書き出したJSONファイルを選ぶと、今のデータと置き換えます。</p>
+    <div class="row-btns">
+      <label class="btn file-label"><svg viewBox="0 0 24 24"><path d="M12 20V9"/><path d="M7 14l5-5 5 5"/><path d="M5 4h14"/></svg>ファイルを選ぶ<input type="file" id="importFile" accept="application/json,.json"></label>
+    </div>
+    <div class="import-preview" id="importPreview" hidden></div>
+  </div>
+  <div class="stats" id="allStats"></div>
+</template>
+
+<div class="scrim" id="scrim" hidden>
+  <div class="sheet" id="sheet" role="dialog" aria-modal="true"></div>
+</div>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script>
+(() => {
+  const KEY = 'bass-practice-v1';
+  const $ = id => document.getElementById(id);
+  const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+  const pad = n => String(n).padStart(2, '0');
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const ymd = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+  const today = () => ymd(new Date());
+  const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
+  const r1 = t => Math.round(t * 10) / 10;
+
+  const ICON = {
+    x: '<svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>',
+    pencil: '<svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>',
+    back: '<svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg>',
+    chev: '<svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>',
+    plus: '<svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>',
+    trash: '<svg viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>',
+    play: '<svg viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z"/></svg>',
+    pause: '<svg viewBox="0 0 24 24"><rect x="6.5" y="5" width="4" height="14" rx="1"/><rect x="13.5" y="5" width="4" height="14" rx="1"/></svg>',
+    ext: '<svg viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>',
+    loop: '<svg viewBox="0 0 24 24"><path d="M17 2.5l3 3-3 3"/><path d="M4 11.5v-2a4 4 0 0 1 4-4h12"/><path d="M7 21.5l-3-3 3-3"/><path d="M20 12.5v2a4 4 0 0 1-4 4H4"/></svg>',
+    note: '<svg viewBox="0 0 24 24"><path d="M9 18V5.5l11-2v12.5"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg>',
+    paste: '<svg viewBox="0 0 24 24"><rect x="6" y="4" width="12" height="17" rx="2"/><path d="M9 4.5V3h6v1.5"/></svg>',
+    gear: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1.08-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1.08 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>'
+  };
+  document.querySelectorAll('.top-actions').forEach(el => {
+    el.innerHTML = el.innerHTML.replace('@@GEAR@@', `<button class="icon-btn" data-act="settings" aria-label="設定・データ">${ICON.gear}</button>`);
+  });
+
+  const ST = {
+    todo: { label: '未着手', c: 'var(--muted)' },
+    wip: { label: '練習中', c: 'var(--ember)' },
+    done: { label: '弾ける', c: 'var(--moss)' }
+  };
+  const ST_ORDER = ['todo', 'wip', 'done'];
+  const RANK = { wip: 0, todo: 1, done: 2 };
+  const LABELS = ['原曲', '弾いてみた', '解説', 'TAB動画', 'ライブ'];
+  const MARK_NAMES = ['イントロ', 'Aメロ', 'Bメロ', 'サビ', '2番Aメロ', '間奏', 'ソロ', 'アウトロ'];
+
+  /* ---------- 時間の表示と入力 ---------- */
+  function fmtT(t) {
+    if (t == null || isNaN(t)) return '—';
+    t = r1(Math.max(0, t));
+    const m = Math.floor(t / 60);
+    return `${m}:${(t - m * 60).toFixed(1).padStart(4, '0')}`;
+  }
+  function fmtDur(t) {
+    if (!t) return '';
+    t = Math.floor(t);
+    return `${Math.floor(t / 60)}:${pad(t % 60)}`;
+  }
+  function parseT(s) {
+    s = String(s || '').trim().replace(/[:：]/g, ':').replace(/[．。]/g, '.');
+    const m = s.match(/^(?:(\d+):)?(\d+(?:\.\d+)?)$/);
+    return m ? (+(m[1] || 0)) * 60 + +m[2] : NaN;
+  }
+
+  /* ---------- YouTubeのURLから動画IDを取り出す ---------- */
+  function ytId(input) {
+    const s = String(input || '').trim();
+    if (/^[\w-]{11}$/.test(s)) return s;
+    try {
+      const u = new URL(/^https?:\/\//i.test(s) ? s : 'https://' + s);
+      const h = u.hostname.replace(/^(www|m|music)\./, '');
+      const ok = id => (id && /^[\w-]{11}$/.test(id) ? id : null);
+      if (h === 'youtu.be') return ok(u.pathname.split('/')[1]);
+      if (h === 'youtube.com' || h === 'youtube-nocookie.com') {
+        if (u.searchParams.get('v')) return ok(u.searchParams.get('v'));
+        const m = u.pathname.match(/^\/(?:embed|shorts|live|v)\/([\w-]{11})/);
+        if (m) return m[1];
+      }
+    } catch {}
+    return null;
+  }
+  const thumbUrl = vid => `https://i.ytimg.com/vi/${vid}/mqdefault.jpg`;
+  const watchUrl = (vid, t) => `https://www.youtube.com/watch?v=${vid}${t ? `&t=${Math.floor(t)}s` : ''}`;
+  const thumb = v => v
+    ? `<span class="thumb"><img src="${thumbUrl(v.vid)}" alt="" loading="lazy"></span>`
+    : `<span class="thumb">${ICON.note}</span>`;
+
+  /* ---------- データ ---------- */
+  const numOrNull = v => (v === '' || v == null || isNaN(+v) ? null : +v);
+  function bpmOrNull(v) { const n = numOrNull(v); return n == null ? null : clamp(Math.round(n), 20, 300); }
+  function defaults() {
+    return {
+      version: 1,
+      songs: [],
+      cats: [{ id: 'c-scale', name: 'スケール' }, { id: 'c-finger', name: '運指' }, { id: 'c-rhythm', name: 'リズム練' }],
+      drills: [],
+      metro: { bpm: 100, beats: 4, sub: 1, vol: 80 },
+      meta: { lastExport: null }
+    };
+  }
+  function normVideo(v) {
+    if (!v || typeof v !== 'object') return null;
+    const vid = ytId(v.vid) || ytId(v.url);
+    if (!vid) return null;
+    const ab = v.ab && typeof v.ab === 'object' ? { a: numOrNull(v.ab.a), b: numOrNull(v.ab.b) } : null;
+    return {
+      id: String(v.id || uid()), url: String(v.url || watchUrl(vid)), vid,
+      label: String(v.label || ''), title: String(v.title || ''), ab,
+      marks: (Array.isArray(v.marks) ? v.marks : []).filter(m => m && !isNaN(+m.a) && !isNaN(+m.b))
+        .map(m => ({ id: String(m.id || uid()), name: String(m.name || 'ブックマーク'), a: r1(+m.a), b: r1(+m.b) }))
+    };
+  }
+  const normVideos = a => (Array.isArray(a) ? a : []).map(normVideo).filter(Boolean);
+  function normSong(s) {
+    return {
+      id: String(s.id || uid()), title: String(s.title || '無題'), artist: String(s.artist || ''),
+      bpm: bpmOrNull(s.bpm), key: String(s.key || ''), status: ST[s.status] ? s.status : 'todo',
+      tab: String(s.tab || ''), memo: String(s.memo || ''), videos: normVideos(s.videos), created: +s.created || Date.now()
+    };
+  }
+  function normDrill(d) {
+    return {
+      id: String(d.id || uid()), catId: String(d.catId || ''), title: String(d.title || '無題'),
+      bpm: bpmOrNull(d.bpm), memo: String(d.memo || ''), videos: normVideos(d.videos), created: +d.created || Date.now()
+    };
+  }
+  function migrate(v) {
+    const base = defaults();
+    if (!v || typeof v !== 'object') return base;
+    const out = {
+      version: 1,
+      songs: (Array.isArray(v.songs) ? v.songs : []).filter(s => s && typeof s === 'object').map(normSong),
+      cats: Array.isArray(v.cats)
+        ? v.cats.filter(c => c && c.id).map(c => ({ id: String(c.id), name: String(c.name || 'カテゴリ') }))
+        : base.cats,
+      drills: (Array.isArray(v.drills) ? v.drills : []).filter(d => d && typeof d === 'object').map(normDrill),
+      metro: { ...base.metro, ...(v.metro && typeof v.metro === 'object' ? v.metro : {}) },
+      meta: { lastExport: v.meta && v.meta.lastExport || null }
+    };
+    const m = out.metro;
+    m.bpm = clamp(Math.round(+m.bpm) || 100, 30, 260);
+    m.beats = [2, 3, 4, 6].includes(+m.beats) ? +m.beats : 4;
+    m.sub = [1, 2, 3, 4].includes(+m.sub) ? +m.sub : 1;
+    m.vol = clamp(Math.round(+m.vol), 0, 100);
+    if (isNaN(m.vol)) m.vol = 80;
+    if (out.drills.some(d => !out.cats.find(c => c.id === d.catId))) {
+      if (!out.cats.length) out.cats.push({ id: uid(), name: 'その他' });
+      out.drills.forEach(d => { if (!out.cats.find(c => c.id === d.catId)) d.catId = out.cats[0].id; });
+    }
+    return out;
+  }
+  const valid = v => v && typeof v === 'object' && Array.isArray(v.songs) && Array.isArray(v.drills) && Array.isArray(v.cats);
+  function load() {
+    try { const raw = localStorage.getItem(KEY); if (raw) return migrate(JSON.parse(raw)); } catch {}
+    return defaults();
+  }
+  let data = load();
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(data)); } catch {} }
+
+  /* ---------- 共通UI ---------- */
+  let toastTimer = 0;
+  function toast(text, ms = 2200) {
+    const t = $('toast');
+    t.textContent = text; t.hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { t.hidden = true; }, ms);
+  }
+  const scrim = $('scrim'), sheet = $('sheet');
+  let onSheetClose = null;
+  function openSheet(html, after) {
+    sheet.innerHTML = '<div class="grab"></div>' + html;
+    scrim.hidden = false;
+    sheet.scrollTop = 0;
+    onSheetClose = null;
+    const c = sheet.querySelector('[data-close]');
+    if (c) c.onclick = closeSheet;
+    after && after(sheet);
+  }
+  function closeSheet() {
+    scrim.hidden = true;
+    sheet.innerHTML = '';
+    const f = onSheetClose; onSheetClose = null; f && f();
+  }
+  scrim.addEventListener('click', e => { if (e.target === scrim) closeSheet(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !scrim.hidden) closeSheet(); });
+  const sheetHead = title => `<div class="sheet-head"><h2>${title}</h2><button class="del" data-close aria-label="閉じる">${ICON.x}</button></div>`;
+
+  // 2回押しで削除するボタン
+  function armDelete(btn, label, action) {
+    let armed = false, t = 0;
+    const idle = btn.innerHTML;
+    btn.addEventListener('click', () => {
+      if (armed) { clearTimeout(t); action(); return; }
+      armed = true;
+      btn.classList.add('armed');
+      btn.textContent = label;
+      t = setTimeout(() => { armed = false; btn.classList.remove('armed'); btn.innerHTML = idle; }, 3000);
+    });
+  }
+  function autoGrow(ta) { ta.style.height = 'auto'; ta.style.height = ta.scrollHeight + 4 + 'px'; }
+  async function pasteInto(input) {
+    try {
+      const t = await navigator.clipboard.readText();
+      if (t) { input.value = t.trim(); input.dispatchEvent(new Event('input')); }
+    } catch { input.focus(); toast('長押しして貼り付けてください'); }
+  }
+
+  /* ---------- 画面の切り替え ---------- */
+  let tab = 'songs';
+  let detail = null; // { kind: 'song' | 'drill', id, tab, vi }
+  const TABS = ['songs', 'drills', 'metro'];
+  function show() {
+    const dOn = !!detail && detail.tab === tab;
+    TABS.forEach(t => {
+      $('v-' + t).hidden = !(t === tab && !dOn);
+      $('t-' + t).setAttribute('aria-selected', String(t === tab));
+    });
+    $('v-detail').hidden = !dOn;
+    if (dOn) tick(true);
+  }
+  function switchTab(name) {
+    if (name === tab && detail && detail.tab === name) { closeDetail(); return; }
+    tab = name;
+    if (name === 'songs') renderSongs();
+    if (name === 'drills') renderDrills();
+    if (name === 'metro') renderMetro();
+    show();
+  }
+  document.querySelectorAll('.tab').forEach(b => b.addEventListener('click', () => switchTab(b.dataset.tab)));
+
+  /* ---------- 曲タブ ---------- */
+  let songFilter = 'all';
+  function renderSongs() {
+    const list = data.songs;
+    $('songSub').textContent = list.length ? `課題曲 ${list.length}曲` : '課題曲';
+    const cnt = k => list.filter(s => s.status === k).length;
+    $('songFilter').innerHTML = [['all', 'すべて', list.length], ...['wip', 'todo', 'done'].map(k => [k, ST[k].label, cnt(k)])]
+      .map(([k, l, n]) => `<button class="chip-btn" data-f="${k}" aria-pressed="${songFilter === k}">${k !== 'all' ? `<span class="dot" style="--c:${ST[k].c}"></span>` : ''}${l}<span class="cnt">${n}</span></button>`).join('');
+    const shown = list.filter(s => songFilter === 'all' || s.status === songFilter)
+      .sort((a, b) => RANK[a.status] - RANK[b.status] || b.created - a.created);
+    $('songList').innerHTML = shown.length ? shown.map(s => `
+      <button class="song" data-id="${s.id}">
+        ${thumb(s.videos[0])}
+        <span class="song-body">
+          <b class="song-title">${esc(s.title)}</b>
+          ${s.artist ? `<small>${esc(s.artist)}</small>` : ''}
+          <span class="song-meta">${s.bpm ? `<span class="tag num">♩ ${s.bpm}</span>` : ''}${s.key ? `<span class="tag">${esc(s.key)}</span>` : ''}${s.videos.length ? `<span class="tag">動画 ${s.videos.length}</span>` : ''}</span>
+        </span>
+        <span class="status-pill" style="--c:${ST[s.status].c}">${ST[s.status].label}</span>
+      </button>`).join('')
+      : `<p class="empty">${list.length ? 'この進捗の曲はありません。' : 'まだ曲がありません。<br>「＋ 曲を追加」から登録してください。'}</p>`;
+  }
+  $('songFilter').addEventListener('click', e => {
+    const b = e.target.closest('[data-f]'); if (!b) return;
+    songFilter = b.dataset.f; renderSongs();
+  });
+  $('songList').addEventListener('click', e => {
+    const b = e.target.closest('.song'); if (b) openDetail('song', b.dataset.id);
+  });
+  $('songAdd').addEventListener('click', () => editSong(null));
+
+  function editSong(s) {
+    const isNew = !s;
+    let status = s ? s.status : 'todo';
+    openSheet(`${sheetHead(isNew ? '曲を追加' : '曲を編集')}
+      <label class="field"><span>曲名</span><input class="text-input" id="fTitle" value="${esc(s?.title)}" placeholder="例:Yellow" autocomplete="off"></label>
+      <p class="err" id="fErr" hidden></p>
+      <label class="field"><span>アーティスト</span><input class="text-input" id="fArtist" value="${esc(s?.artist)}" autocomplete="off"></label>
+      <div class="field-row">
+        <label class="field"><span>BPM</span><input class="text-input num" id="fBpm" inputmode="numeric" value="${s?.bpm ?? ''}" placeholder="120"></label>
+        <label class="field"><span>キー</span><input class="text-input" id="fKey" value="${esc(s?.key)}" placeholder="Em など" autocomplete="off"></label>
+      </div>
+      <div class="field"><span>進捗</span><div class="seg" id="fStatus"></div></div>
+      <label class="field"><span>TAB譜リンク</span><input class="text-input" id="fTab" inputmode="url" value="${esc(s?.tab)}" placeholder="https://..."></label>
+      ${isNew ? `<div class="field"><span>参考動画のURL(任意・あとからでも追加できます)</span>
+        <div class="input-with"><input class="text-input" id="fUrl" inputmode="url" placeholder="https://youtu.be/..."><button class="chip-btn" id="fPaste">${ICON.paste}貼り付け</button></div></div>
+        <p class="err" id="fUrlErr" hidden></p>` : ''}
+      <div class="sheet-foot sheet-actions">
+        ${isNew ? '' : `<button class="confirm-del" id="fDel">${ICON.trash}削除</button>`}
+        <button class="btn done" id="fSave">${isNew ? '追加' : '保存'}</button>
+      </div>`, sh => {
+      const drawSt = () => {
+        $('fStatus').innerHTML = ST_ORDER.map(k => `<button data-k="${k}" aria-pressed="${status === k}"><span class="dot" style="--c:${ST[k].c}"></span>${ST[k].label}</button>`).join('');
+      };
+      drawSt();
+      $('fStatus').onclick = e => { const b = e.target.closest('[data-k]'); if (b) { status = b.dataset.k; drawSt(); } };
+      if (isNew) {
+        $('fPaste').onclick = () => pasteInto($('fUrl'));
+        setTimeout(() => $('fTitle').focus(), 50);
+      }
+      $('fSave').onclick = () => {
+        const title = $('fTitle').value.trim();
+        if (!title) { $('fErr').textContent = '曲名を入れてください'; $('fErr').hidden = false; return; }
+        let video = null;
+        if (isNew && $('fUrl').value.trim()) {
+          video = normVideo({ url: $('fUrl').value.trim() });
+          if (!video) { $('fUrlErr').textContent = 'YouTubeのURLとして読み取れませんでした'; $('fUrlErr').hidden = false; return; }
+          video.label = '原曲';
+        }
+        const vals = { title, artist: $('fArtist').value.trim(), bpm: bpmOrNull($('fBpm').value.replace(/[^\d.]/g, '')), key: $('fKey').value.trim(), status, tab: $('fTab').value.trim() };
+        if (isNew) {
+          const ns = normSong({ ...vals, videos: [] });
+          if (video) ns.videos.push(video);
+          data.songs.push(ns); save(); closeSheet();
+          renderSongs(); openDetail('song', ns.id);
+        } else {
+          Object.assign(s, vals); save(); closeSheet();
+          renderDHead(); renderStatus(); renderInfo(); renderSongs();
+        }
+      };
+      if (!isNew) armDelete($('fDel'), 'もう一度押すと削除', () => {
+        data.songs = data.songs.filter(x => x.id !== s.id); save(); closeSheet(); closeDetail(); toast('削除しました');
+      });
+    });
+  }
+
+  /* ---------- 基礎練タブ ---------- */
+  function renderDrills() {
+    $('drillSub').textContent = data.drills.length ? `${data.drills.length}件` : 'スケール・運指・リズム';
+    if (!data.cats.length) {
+      $('drillList').innerHTML = '<p class="empty">カテゴリがありません。<br>下の「カテゴリを編集」から追加してください。</p>';
+      return;
+    }
+    $('drillList').innerHTML = data.cats.map(c => {
+      const items = data.drills.filter(d => d.catId === c.id).sort((a, b) => a.created - b.created);
+      return `<section class="cat">
+        <div class="cat-head"><h2>${esc(c.name)}</h2><span class="sub num">${items.length || ''}</span>
+          <button class="icon-btn sm" data-add="${c.id}" aria-label="${esc(c.name)}に追加">${ICON.plus}</button></div>
+        <div class="list">${items.length ? items.map(d => `
+          <button class="drill" data-id="${d.id}">
+            ${thumb(d.videos[0])}
+            <span class="song-body">
+              <b class="song-title">${esc(d.title)}</b>
+              ${d.bpm || d.memo ? `<span class="song-meta">${d.bpm ? `<span class="tag num">♩ ${d.bpm}</span>` : ''}${d.memo ? `<small class="clip">${esc(d.memo.split('\n')[0])}</small>` : ''}</span>` : ''}
+            </span>
+            <span class="chev">${ICON.chev}</span>
+          </button>`).join('') : '<p class="empty small">右の＋から動画を追加</p>'}</div>
+      </section>`;
+    }).join('');
+  }
+  $('drillList').addEventListener('click', e => {
+    const a = e.target.closest('[data-add]');
+    if (a) { editDrill(null, a.dataset.add); return; }
+    const b = e.target.closest('.drill');
+    if (b) openDetail('drill', b.dataset.id);
+  });
+  $('catEdit').addEventListener('click', editCats);
+
+  function editDrill(d, catId) {
+    const isNew = !d;
+    let cat = d ? d.catId : catId || (data.cats[0] && data.cats[0].id);
+    openSheet(`${sheetHead(isNew ? '基礎練を追加' : '基礎練を編集')}
+      <label class="field"><span>タイトル</span><input class="text-input" id="fTitle" value="${esc(d?.title)}" placeholder="例:メジャースケール 2オクターブ" autocomplete="off"></label>
+      <p class="err" id="fErr" hidden></p>
+      <div class="field"><span>カテゴリ</span><div class="chip-wrap" id="fCat"></div></div>
+      ${isNew ? `<div class="field"><span>動画のURL</span>
+        <div class="input-with"><input class="text-input" id="fUrl" inputmode="url" placeholder="https://youtu.be/..."><button class="chip-btn" id="fPaste">${ICON.paste}貼り付け</button></div></div>
+        <p class="err" id="fUrlErr" hidden></p>` : ''}
+      <label class="field"><span>BPM(任意)</span><input class="text-input num" id="fBpm" inputmode="numeric" value="${d?.bpm ?? ''}" placeholder="例:80"></label>
+      <div class="sheet-foot sheet-actions">
+        ${isNew ? '' : `<button class="confirm-del" id="fDel">${ICON.trash}削除</button>`}
+        <button class="btn done" id="fSave">${isNew ? '追加' : '保存'}</button>
+      </div>`, () => {
+      const drawCat = () => {
+        $('fCat').innerHTML = data.cats.map(c => `<button class="chip-btn" data-c="${c.id}" aria-pressed="${cat === c.id}">${esc(c.name)}</button>`).join('');
+      };
+      drawCat();
+      $('fCat').onclick = e => { const b = e.target.closest('[data-c]'); if (b) { cat = b.dataset.c; drawCat(); } };
+      if (isNew) {
+        $('fPaste').onclick = () => pasteInto($('fUrl'));
+        setTimeout(() => $('fTitle').focus(), 50);
+      }
+      $('fSave').onclick = () => {
+        const title = $('fTitle').value.trim();
+        if (!title) { $('fErr').textContent = 'タイトルを入れてください'; $('fErr').hidden = false; return; }
+        if (!cat) { $('fErr').textContent = '先にカテゴリを作ってください'; $('fErr').hidden = false; return; }
+        let video = null;
+        if (isNew && $('fUrl').value.trim()) {
+          video = normVideo({ url: $('fUrl').value.trim() });
+          if (!video) { $('fUrlErr').textContent = 'YouTubeのURLとして読み取れませんでした'; $('fUrlErr').hidden = false; return; }
+        }
+        const vals = { title, catId: cat, bpm: bpmOrNull($('fBpm').value.replace(/[^\d.]/g, '')) };
+        if (isNew) {
+          const nd = normDrill({ ...vals, videos: [] });
+          if (video) nd.videos.push(video);
+          data.drills.push(nd); save(); closeSheet(); renderDrills(); openDetail('drill', nd.id);
+        } else {
+          Object.assign(d, vals); save(); closeSheet(); renderDHead(); renderInfo(); renderDrills();
+        }
+      };
+      if (!isNew) armDelete($('fDel'), 'もう一度押すと削除', () => {
+        data.drills = data.drills.filter(x => x.id !== d.id); save(); closeSheet(); closeDetail(); toast('削除しました');
+      });
+    });
+  }
+
+  function editCats() {
+    openSheet(`${sheetHead('カテゴリを編集')}
+      <div class="list" id="catRows"></div>
+      <p class="hint">中に動画が入っているカテゴリは削除できません。</p>
+      <div class="input-with"><input class="text-input" id="newCat" placeholder="新しいカテゴリ名" autocomplete="off"><button class="chip-btn" id="addCat">${ICON.plus}追加</button></div>`, () => {
+      const draw = () => {
+        $('catRows').innerHTML = data.cats.map((c, i) => {
+          const n = data.drills.filter(d => d.catId === c.id).length;
+          return `<div class="cat-row">
+            <input class="text-input" data-cat="${c.id}" value="${esc(c.name)}" aria-label="カテゴリ名">
+            <button class="del" data-up="${i}" aria-label="上へ" ${i ? '' : 'disabled'}><svg viewBox="0 0 24 24"><path d="M6 15l6-6 6 6"/></svg></button>
+            <button class="del" data-cdel="${c.id}" aria-label="削除" ${n ? 'disabled' : ''}>${ICON.trash}</button>
+          </div>`;
+        }).join('') || '<p class="empty small">カテゴリがありません</p>';
+      };
+      draw();
+      $('catRows').addEventListener('input', e => {
+        const c = data.cats.find(x => x.id === e.target.dataset.cat);
+        if (c && e.target.value.trim()) { c.name = e.target.value.trim(); save(); }
+      });
+      $('catRows').addEventListener('click', e => {
+        const up = e.target.closest('[data-up]');
+        if (up) { const i = +up.dataset.up; [data.cats[i - 1], data.cats[i]] = [data.cats[i], data.cats[i - 1]]; save(); draw(); return; }
+        const del = e.target.closest('[data-cdel]');
+        if (del) { data.cats = data.cats.filter(c => c.id !== del.dataset.cdel); save(); draw(); }
+      });
+      const add = () => {
+        const v = $('newCat').value.trim(); if (!v) return;
+        data.cats.push({ id: uid(), name: v }); save(); $('newCat').value = ''; draw();
+      };
+      $('addCat').onclick = add;
+      $('newCat').addEventListener('keydown', e => { if (e.key === 'Enter') add(); });
+      onSheetClose = renderDrills;
+    });
+  }
+
+  /* ---------- 詳細(プレイヤー付き) ---------- */
+  function getItem() {
+    if (!detail) return null;
+    return (detail.kind === 'song' ? data.songs : data.drills).find(x => x.id === detail.id) || null;
+  }
+  const curVideo = () => { const it = getItem(); return it ? it.videos[detail.vi] || null : null; };
+
+  function openDetail(kind, id) {
+    destroyPlayer();
+    detail = { kind, id, tab: kind === 'song' ? 'songs' : 'drills', vi: 0 };
+    tab = detail.tab;
+    renderDetail();
+    show();
+    $('v-detail').scrollTop = 0;
+  }
+  function closeDetail() {
+    destroyPlayer();
+    detail = null;
+    $('v-detail').innerHTML = '';
+    if (tab === 'songs') renderSongs();
+    if (tab === 'drills') renderDrills();
+    show();
+  }
+
+  function renderDetail() {
+    const it = getItem(); if (!it) { closeDetail(); return; }
+    const isSong = detail.kind === 'song';
+    $('v-detail').innerHTML = `
+      <header class="top">
+        <button class="icon-btn" id="dBack" aria-label="一覧に戻る">${ICON.back}</button>
+        <div class="brand-wrap grow"><span class="d-title" id="dTitle"></span><span class="sub" id="dSubT"></span></div>
+        <button class="icon-btn" id="dEdit" aria-label="編集">${ICON.pencil}</button>
+      </header>
+      <div class="detail-grid">
+        <div class="col">
+          <div class="card player-card">
+            <div class="chip-row vchips" id="dVChips" hidden></div>
+            <div class="frame" id="dFrame"></div>
+            <p class="frame-note" id="dNote" hidden></p>
+            <div class="frame-foot" id="dFoot"><span class="sub clip" id="dVTitle"></span><a class="link-btn" id="dOpenYT" target="_blank" rel="noopener">YouTubeで開く${ICON.ext}</a></div>
+          </div>
+          <div class="card" id="dLoop">
+            <div class="time-row"><b class="num" id="tNow">0:00.0</b><span class="sub" id="tDur"></span><span class="rate-tag num" id="tRate"></span></div>
+            <div class="timeline" id="tl" aria-label="再生位置(タップで移動)">
+              <div class="tl-fill" id="tlFill"></div>
+              <div class="tl-region" id="tlRegion" hidden></div>
+              <div class="tl-mark" id="tlA" hidden>A</div>
+              <div class="tl-mark b" id="tlB" hidden>B</div>
+              <div class="tl-head" id="tlHead"></div>
+            </div>
+            <div class="transport">
+              <button class="icon-btn" data-skip="-5" aria-label="5秒戻る">−5</button>
+              <button class="play-btn" id="pPlay" aria-label="再生">${ICON.play}</button>
+              <button class="icon-btn" data-skip="5" aria-label="5秒進む">+5</button>
+            </div>
+            <div class="ab-grid">${['a', 'b'].map(k => `
+              <div class="ab">
+                <span class="ab-tag">${k.toUpperCase()}</span>
+                <b class="num ab-val" id="${k}Val">—</b>
+                <button class="nudge" data-nudge="${k}" data-d="-0.5" aria-label="${k.toUpperCase()}を0.5秒前へ">−0.5</button>
+                <button class="nudge" data-nudge="${k}" data-d="0.5" aria-label="${k.toUpperCase()}を0.5秒後ろへ">+0.5</button>
+                <button class="chip-btn" data-set="${k}">今の位置</button>
+              </div>`).join('')}
+            </div>
+            <div class="loop-actions">
+              <button class="btn loop-btn" id="loopBtn" aria-pressed="false">${ICON.loop}区間ループ</button>
+              <button class="btn" id="toA">Aへ戻る</button>
+            </div>
+            <div class="speed"><span class="lbl">速度</span><div class="seg" id="speedSeg"></div></div>
+          </div>
+        </div>
+        <div class="col">
+          ${isSong ? '<div class="card"><h3>進捗</h3><div class="seg" id="dStatus"></div></div>' : ''}
+          <div class="card" id="dMarksCard">
+            <div class="card-head"><h3>ブックマーク</h3><button class="chip-btn" id="dMarkAdd">${ICON.plus}この区間を保存</button></div>
+            <div class="marks" id="dMarks"></div>
+          </div>
+          <div class="card" id="dInfo"></div>
+          <div class="card">
+            <div class="card-head"><h3>${isSong ? '参考動画' : '動画'}</h3><button class="chip-btn" id="dVidAdd">${ICON.plus}追加</button></div>
+            <div class="vlist" id="dVList"></div>
+          </div>
+        </div>
+      </div>`;
+    $('dBack').onclick = closeDetail;
+    $('dEdit').onclick = () => (isSong ? editSong(it) : editDrill(it));
+    $('dVidAdd').onclick = () => editVideo(null);
+    $('dMarkAdd').onclick = addMark;
+    bindLoopControls();
+    renderDHead(); renderStatus(); renderInfo();
+    mountCurrent();
+  }
+  function renderDHead() {
+    const it = getItem(); if (!it || !$('dTitle')) return;
+    $('dTitle').textContent = it.title;
+    if (detail.kind === 'song') $('dSubT').textContent = it.artist;
+    else { const c = data.cats.find(c => c.id === it.catId); $('dSubT').textContent = c ? `基礎練・${c.name}` : '基礎練'; }
+  }
+  function renderStatus() {
+    const it = getItem(); if (!it || !$('dStatus')) return;
+    $('dStatus').innerHTML = ST_ORDER.map(k => `<button data-k="${k}" aria-pressed="${it.status === k}"><span class="dot" style="--c:${ST[k].c}"></span>${ST[k].label}</button>`).join('');
+    $('dStatus').onclick = e => {
+      const b = e.target.closest('[data-k]'); if (!b) return;
+      it.status = b.dataset.k; save(); renderStatus();
+    };
+  }
+  function renderInfo() {
+    const it = getItem(); if (!it || !$('dInfo')) return;
+    const isSong = detail.kind === 'song';
+    $('dInfo').innerHTML = `
+      <div class="info-row"><span class="lbl">BPM</span>
+        ${it.bpm ? `<b class="val num">${it.bpm}</b>` : '<span class="val none">未設定</span>'}
+        <button class="chip-btn metro-mini" id="dMetro" ${it.bpm ? '' : 'hidden'}></button></div>
+      ${isSong ? `<div class="info-row"><span class="lbl">キー</span>${it.key ? `<b class="val">${esc(it.key)}</b>` : '<span class="val none">未設定</span>'}</div>
+      <div class="info-row"><span class="lbl">TAB譜</span>${it.tab ? `<a class="btn" style="min-height:42px;flex:1" href="${esc(/^https?:/i.test(it.tab) ? it.tab : 'https://' + it.tab)}" target="_blank" rel="noopener">TAB譜を開く${ICON.ext}</a>` : '<span class="val none">未設定(右上の鉛筆から追加)</span>'}</div>` : ''}
+      <label class="field"><span>メモ</span><textarea class="memo" id="dMemo" rows="2" placeholder="${isSong ? '運指・ポジション・気をつける所など' : '目標テンポ・気をつける所など'}">${esc(it.memo)}</textarea></label>`;
+    const ta = $('dMemo');
+    autoGrow(ta);
+    ta.addEventListener('input', () => { it.memo = ta.value; save(); autoGrow(ta); });
+    $('dMetro').onclick = () => {
+      if (M.running && data.metro.bpm === it.bpm) { mStop(); return; }
+      setBpm(it.bpm);
+      if (!M.running) mStart(); else refreshMetroUI();
+    };
+    refreshMetroUI();
+  }
+  function renderVideos() {
+    const it = getItem(); if (!it || !$('dVList')) return;
+    $('dVList').innerHTML = it.videos.length ? it.videos.map((v, i) => `
+      <div class="vrow ${i === detail.vi ? 'on' : ''}">
+        <button class="vrow-main" data-vi="${i}">${thumb(v)}<span><b>${esc(v.label || '動画' + (i + 1))}</b><small class="clip">${esc(v.title || v.url)}</small></span></button>
+        <button class="del" data-vedit="${i}" aria-label="動画を編集">${ICON.pencil}</button>
+      </div>`).join('') : '<p class="empty small">まだ動画がありません。</p>';
+    $('dVList').onclick = e => {
+      const ed = e.target.closest('[data-vedit]');
+      if (ed) { editVideo(+ed.dataset.vedit); return; }
+      const b = e.target.closest('[data-vi]');
+      if (b && +b.dataset.vi !== detail.vi) { detail.vi = +b.dataset.vi; mountCurrent(); }
+    };
+    const chips = $('dVChips');
+    chips.hidden = it.videos.length < 2;
+    chips.innerHTML = it.videos.map((v, i) => `<button class="chip-btn" data-vi="${i}" aria-pressed="${i === detail.vi}">${esc(v.label || '動画' + (i + 1))}</button>`).join('');
+    chips.onclick = e => {
+      const b = e.target.closest('[data-vi]');
+      if (b && +b.dataset.vi !== detail.vi) { detail.vi = +b.dataset.vi; mountCurrent(); }
+    };
+  }
+
+  function editVideo(i) {
+    const it = getItem(); if (!it) return;
+    const v = i == null ? null : it.videos[i];
+    openSheet(`${sheetHead(v ? '動画を編集' : '動画を追加')}
+      <div class="field"><span>YouTubeのURL</span>
+        <div class="input-with"><input class="text-input" id="fUrl" inputmode="url" placeholder="https://youtu.be/..." value="${esc(v?.url)}"><button class="chip-btn" id="fPaste">${ICON.paste}貼り付け</button></div></div>
+      <p class="err" id="fErr" hidden></p>
+      <label class="field"><span>ラベル</span><input class="text-input" id="fLabel" placeholder="原曲・弾いてみた など" value="${esc(v?.label)}" autocomplete="off"></label>
+      <div class="chip-wrap" id="fLabels">${LABELS.map(l => `<button class="chip-btn" data-l="${l}">${l}</button>`).join('')}</div>
+      ${v && v.marks.length ? '<p class="hint">URLを別の動画に変えた場合、ブックマークの時間はそのまま残ります。</p>' : ''}
+      <div class="sheet-foot sheet-actions">
+        ${v ? `<button class="confirm-del" id="fDel">${ICON.trash}削除</button>` : ''}
+        <button class="btn done" id="fSave">${v ? '保存' : '追加'}</button>
+      </div>`, () => {
+      $('fPaste').onclick = () => pasteInto($('fUrl'));
+      $('fLabels').onclick = e => { const b = e.target.closest('[data-l]'); if (b) $('fLabel').value = b.dataset.l; };
+      if (!v) setTimeout(() => $('fUrl').focus(), 50);
+      $('fSave').onclick = () => {
+        const url = $('fUrl').value.trim();
+        const vid = ytId(url);
+        if (!vid) { $('fErr').textContent = 'YouTubeのURLとして読み取れませんでした'; $('fErr').hidden = false; return; }
+        const label = $('fLabel').value.trim();
+        if (v) {
+          const changed = v.vid !== vid;
+          Object.assign(v, { url, vid, label });
+          if (changed) { v.title = ''; v.ab = null; }
+          save(); closeSheet();
+          if (changed && i === detail.vi) mountCurrent(); else renderVideos();
+        } else {
+          const nv = normVideo({ url, label });
+          it.videos.push(nv); detail.vi = it.videos.length - 1;
+          save(); closeSheet(); mountCurrent();
+        }
+      };
+      if (v) armDelete($('fDel'), 'もう一度押すと削除', () => {
+        it.videos.splice(i, 1);
+        const wasCur = i === detail.vi;
+        if (detail.vi > i || detail.vi >= it.videos.length) detail.vi = Math.max(0, detail.vi - 1);
+        save(); closeSheet();
+        if (wasCur) mountCurrent(); else renderVideos();
+      });
+    });
+  }
+
+  /* ---------- YouTubeプレイヤー ---------- */
+  let player = null, playerReady = false, pollT = 0, mountToken = 0;
+  let ab = { a: null, b: null }, loopOn = false, rate = 1, rates = [0.5, 0.75, 1], dur = 0, playing = false;
+  let ytApi = null;
+  function loadYT() {
+    if (window.YT && window.YT.Player) return Promise.resolve();
+    if (ytApi) return ytApi;
+    ytApi = new Promise((res, rej) => {
+      const prev = window.onYouTubeIframeAPIReady;
+      window.onYouTubeIframeAPIReady = () => { prev && prev(); res(); };
+      const s = document.createElement('script');
+      s.src = 'https://www.youtube.com/iframe_api';
+      s.onerror = () => { ytApi = null; s.remove(); rej(); };
+      document.head.appendChild(s);
+      setTimeout(() => { if (!(window.YT && window.YT.Player)) { ytApi = null; rej(); } }, 15000);
+    });
+    return ytApi;
+  }
+  function destroyPlayer() {
+    clearInterval(pollT); pollT = 0;
+    playerReady = false; playing = false;
+    mountToken++;
+    if (player) { try { player.destroy(); } catch {} player = null; }
+  }
+  const ERR = {
+    2: '動画のURLが正しくないようです。',
+    5: 'この動画はここでは再生できません。「YouTubeで開く」から見てください。',
+    100: '動画が見つかりません(削除・非公開の可能性があります)。',
+    101: 'この動画は埋め込み再生が許可されていません。「YouTubeで開く」から見てください。',
+    150: 'この動画は埋め込み再生が許可されていません。「YouTubeで開く」から見てください。',
+    153: 'この動画はここでは再生できません。「YouTubeで開く」から見てください。'
+  };
+  function mountCurrent() {
+    destroyPlayer();
+    const v = curVideo();
+    renderVideos();
+    ab = v && v.ab ? { a: v.ab.a, b: v.ab.b } : { a: null, b: null };
+    loopOn = false; dur = 0;
+    $('dNote').hidden = true;
+    $('dLoop').hidden = !v;
+    $('dMarksCard').hidden = !v;
+    $('dFoot').hidden = !v;
+    if (!v) {
+      $('dFrame').innerHTML = `<div class="frame-msg">動画を追加すると、ここで再生できます。<button class="chip-btn" id="dFirstVid">${ICON.plus}動画を追加</button></div>`;
+      $('dFirstVid').onclick = () => editVideo(null);
+      return;
+    }
+    $('dVTitle').textContent = v.title || v.label || '';
+    $('dOpenYT').href = watchUrl(v.vid);
+    $('dFrame').innerHTML = '<div id="ytHost"></div><div class="frame-msg" id="frameMsg">読み込み中…</div>';
+    renderMarks(); renderLoopUI(); tick(true);
+    const token = mountToken;
+    loadYT().then(() => {
+      if (token !== mountToken) return;
+      const pv = { playsinline: 1, rel: 0, modestbranding: 1 };
+      if (/^https?:/.test(location.origin)) pv.origin = location.origin;
+      player = new YT.Player('ytHost', {
+        videoId: v.vid, width: '100%', height: '100%', playerVars: pv,
+        events: {
+          onReady: () => {
+            if (token !== mountToken) return;
+            playerReady = true;
+            const fm = $('frameMsg'); if (fm) fm.remove();
+            try {
+              const rs = (player.getAvailablePlaybackRates() || []).filter(r => r >= 0.5 && r <= 1);
+              rates = rs.length > 1 ? rs : [0.5, 0.75, 1];
+            } catch { rates = [0.5, 0.75, 1]; }
+            if (!rates.includes(rate)) rate = 1;
+            try {
+              const t = player.getVideoData && player.getVideoData().title;
+              if (t && v.title !== t) { v.title = t; save(); $('dVTitle').textContent = t; renderVideos(); }
+            } catch {}
+            // 前回のAの位置から始められるようにしておく
+            if (ab.a != null) { try { player.cueVideoById({ videoId: v.vid, startSeconds: ab.a }); } catch {} }
+            try { player.setPlaybackRate(rate); } catch {}
+            renderLoopUI();
+            pollT = setInterval(tick, 60);
+          },
+          onStateChange: e => {
+            playing = e.data === 1;
+            setPlayIcon();
+            if (e.data === 0 && loopOn && ab.a != null) { player.seekTo(ab.a, true); player.playVideo(); }
+          },
+          onPlaybackRateChange: e => { rate = e.data; renderSpeed(); },
+          onError: e => {
+            const n = $('dNote'); if (!n) return;
+            n.textContent = ERR[e.data] || 'この動画は再生できませんでした。「YouTubeで開く」から見てください。';
+            n.hidden = false;
+            const fm = $('frameMsg'); if (fm) fm.remove();
+          }
+        }
+      });
+    }).catch(() => {
+      if (token !== mountToken) return;
+      const fm = $('frameMsg');
+      if (fm) fm.innerHTML = 'YouTubeを読み込めませんでした。<br>通信状況を確認してください。';
+    });
+  }
+  const pTime = () => { try { return player.getCurrentTime() || 0; } catch { return 0; } };
+  function tick(force) {
+    if (!player || !playerReady) {
+      if (force === true && $('tNow')) { $('tNow').textContent = fmtT(ab.a || 0); }
+      return;
+    }
+    const t = pTime();
+    const had = dur;
+    try { dur = player.getDuration() || dur; } catch {}
+    if (!had && dur) renderLoopUI();
+    if (loopOn && ab.a != null && ab.b != null && ab.b - ab.a >= 0.2 && t >= ab.b) {
+      player.seekTo(ab.a, true);
+    }
+    if ($('v-detail').hidden || document.hidden || !$('tNow')) return;
+    $('tNow').textContent = fmtT(t);
+    $('tDur').textContent = dur ? '/ ' + fmtDur(dur) : '';
+    const p = dur ? clamp(t / dur, 0, 1) * 100 : 0;
+    $('tlHead').style.left = p + '%';
+    $('tlFill').style.width = p + '%';
+  }
+  function setPlayIcon() {
+    const b = $('pPlay'); if (!b) return;
+    b.innerHTML = playing ? ICON.pause : ICON.play;
+    b.setAttribute('aria-label', playing ? '一時停止' : '再生');
+  }
+  let playCheck = 0;
+  function play() {
+    if (!player || !playerReady) return;
+    player.playVideo();
+    clearTimeout(playCheck);
+    playCheck = setTimeout(() => {
+      try { if (player && player.getPlayerState() !== 1 && player.getPlayerState() !== 3) toast('最初の1回は、動画を直接タップして再生してください', 3200); } catch {}
+    }, 1500);
+  }
+  function seek(t) { if (player && playerReady) { player.seekTo(clamp(t, 0, dur || t), true); tick(); } }
+  function persistAB() {
+    const v = curVideo(); if (!v) return;
+    v.ab = { a: ab.a, b: ab.b }; save();
+    if (ab.a != null) $('dOpenYT').href = watchUrl(v.vid, ab.a);
+  }
+  function renderLoopUI() {
+    if (!$('aVal')) return;
+    $('aVal').textContent = fmtT(ab.a);
+    $('bVal').textContent = fmtT(ab.b);
+    document.querySelectorAll('[data-nudge]').forEach(b => { b.disabled = ab[b.dataset.nudge] == null; });
+    const lb = $('loopBtn');
+    lb.setAttribute('aria-pressed', String(loopOn));
+    lb.disabled = !(ab.a != null && ab.b != null);
+    $('toA').disabled = ab.a == null;
+    const hasAB = ab.a != null && ab.b != null && dur;
+    const reg = $('tlRegion');
+    reg.hidden = !hasAB;
+    if (hasAB) {
+      reg.style.left = (ab.a / dur * 100) + '%';
+      reg.style.width = ((ab.b - ab.a) / dur * 100) + '%';
+      reg.classList.toggle('on', loopOn);
+    }
+    // 区間が狭いときはA/Bの文字が重なるので出さない
+    const narrow = hasAB && (ab.b - ab.a) / dur < 0.07;
+    $('tlA').hidden = !(ab.a != null && dur) || narrow;
+    $('tlB').hidden = !(ab.b != null && dur) || narrow;
+    if (dur && ab.a != null) $('tlA').style.left = (ab.a / dur * 100) + '%';
+    if (dur && ab.b != null) $('tlB').style.left = (ab.b / dur * 100) + '%';
+    renderSpeed();
+    renderMarks();
+  }
+  function renderSpeed() {
+    if (!$('speedSeg')) return;
+    $('speedSeg').innerHTML = rates.map(r => `<button data-r="${r}" aria-pressed="${r === rate}">${r === 1 ? '1.0' : r}倍</button>`).join('');
+    $('tRate').textContent = rate !== 1 ? `${rate}倍` : '';
+  }
+  function bindLoopControls() {
+    $('pPlay').onclick = () => {
+      if (!player || !playerReady) return;
+      if (playing) player.pauseVideo(); else play();
+    };
+    document.querySelectorAll('[data-skip]').forEach(b => { b.onclick = () => seek(pTime() + +b.dataset.skip); });
+    $('dLoop').addEventListener('click', e => {
+      const set = e.target.closest('[data-set]');
+      if (set) {
+        if (!player || !playerReady) return;
+        const k = set.dataset.set, t = r1(pTime());
+        if (k === 'a') {
+          ab.a = t;
+          if (ab.b != null && ab.b <= t + 0.2) ab.b = null;
+        } else {
+          if (ab.a == null) ab.a = 0;
+          if (t <= ab.a + 0.2) { toast('BはAより後ろの位置にしてください'); return; }
+          ab.b = t;
+        }
+        if (ab.b == null) loopOn = false;
+        persistAB(); renderLoopUI();
+        return;
+      }
+      const nd = e.target.closest('[data-nudge]');
+      if (nd) {
+        const k = nd.dataset.nudge; if (ab[k] == null) return;
+        let v = r1(ab[k] + +nd.dataset.d);
+        v = clamp(v, 0, dur || v);
+        if (k === 'a' && ab.b != null && v >= ab.b - 0.2) return;
+        if (k === 'b' && ab.a != null && v <= ab.a + 0.2) return;
+        ab[k] = v; persistAB(); renderLoopUI();
+        if (k === 'a' && loopOn) seek(v);
+        return;
+      }
+      const sp = e.target.closest('[data-r]');
+      if (sp) {
+        rate = +sp.dataset.r;
+        try { player && player.setPlaybackRate(rate); } catch {}
+        renderSpeed();
+      }
+    });
+    $('loopBtn').onclick = () => {
+      if (ab.a == null || ab.b == null) return;
+      loopOn = !loopOn;
+      if (loopOn) { const t = pTime(); if (t < ab.a || t >= ab.b) seek(ab.a); }
+      renderLoopUI();
+    };
+    $('toA').onclick = () => { if (ab.a != null) seek(ab.a); };
+    const tl = $('tl');
+    let dragging = false;
+    const seekAt = ev => {
+      if (!dur) return;
+      const r = tl.getBoundingClientRect();
+      seek(clamp((ev.clientX - r.left) / r.width, 0, 1) * dur);
+    };
+    tl.addEventListener('pointerdown', ev => { dragging = true; tl.setPointerCapture(ev.pointerId); seekAt(ev); });
+    tl.addEventListener('pointermove', ev => { if (dragging) seekAt(ev); });
+    ['pointerup', 'pointercancel'].forEach(n => tl.addEventListener(n, () => { dragging = false; }));
+  }
+
+  /* ---------- ブックマーク ---------- */
+  function renderMarks() {
+    const v = curVideo(); if (!v || !$('dMarks')) return;
+    const ms = [...v.marks].sort((x, y) => x.a - y.a);
+    $('dMarks').innerHTML = ms.length ? ms.map(m => `
+      <div class="mark ${m.a === ab.a && m.b === ab.b ? 'on' : ''}">
+        <button class="mark-main" data-mark="${m.id}"><b>${esc(m.name)}</b><span class="sub">${fmtT(m.a)} – ${fmtT(m.b)}</span></button>
+        <button class="del" data-medit="${m.id}" aria-label="ブックマークを編集">${ICON.pencil}</button>
+      </div>`).join('')
+      : '<p class="hint" style="margin:0">AとBを決めて「この区間を保存」を押すと、ここに並びます。タップでその区間のループを始めます。</p>';
+    $('dMarks').onclick = e => {
+      const ed = e.target.closest('[data-medit]');
+      if (ed) { editMark(v.marks.find(m => m.id === ed.dataset.medit)); return; }
+      const b = e.target.closest('[data-mark]');
+      if (!b) return;
+      const m = v.marks.find(x => x.id === b.dataset.mark); if (!m) return;
+      ab = { a: m.a, b: m.b }; loopOn = true;
+      persistAB(); renderLoopUI(); seek(m.a);
+      if (!playing) play();
+    };
+  }
+  function addMark() {
+    if (ab.a == null || ab.b == null) { toast('先にAとBの位置を決めてください'); return; }
+    editMark(null);
+  }
+  function editMark(m) {
+    const v = curVideo(); if (!v) return;
+    const isNew = !m;
+    openSheet(`${sheetHead(isNew ? '区間を保存' : 'ブックマークを編集')}
+      <label class="field"><span>名前</span><input class="text-input" id="fName" value="${esc(m?.name)}" placeholder="サビ など" autocomplete="off"></label>
+      <div class="chip-wrap" id="fNames">${MARK_NAMES.map(n => `<button class="chip-btn" data-n="${n}">${n}</button>`).join('')}</div>
+      ${isNew ? `<p class="range-show">${fmtT(ab.a)} – ${fmtT(ab.b)}</p>` : `
+        <div class="field-row">
+          <label class="field"><span>A(開始)</span><input class="text-input num" id="fA" inputmode="decimal" value="${fmtT(m.a)}"></label>
+          <label class="field"><span>B(終了)</span><input class="text-input num" id="fB" inputmode="decimal" value="${fmtT(m.b)}"></label>
+        </div><p class="hint">「1:23.4」のように分:秒で入力します。</p>`}
+      <p class="err" id="fErr" hidden></p>
+      <div class="sheet-foot sheet-actions">
+        ${isNew ? '' : `<button class="confirm-del" id="fDel">${ICON.trash}削除</button>`}
+        <button class="btn done" id="fSave">保存</button>
+      </div>`, () => {
+      $('fNames').onclick = e => { const b = e.target.closest('[data-n]'); if (b) $('fName').value = b.dataset.n; };
+      $('fSave').onclick = () => {
+        const name = $('fName').value.trim() || `区間 ${v.marks.length + 1}`;
+        if (isNew) {
+          v.marks.push({ id: uid(), name, a: ab.a, b: ab.b });
+        } else {
+          const a = parseT($('fA').value), b = parseT($('fB').value);
+          if (isNaN(a) || isNaN(b)) { $('fErr').textContent = '時間の形式が読み取れませんでした'; $('fErr').hidden = false; return; }
+          if (b <= a) { $('fErr').textContent = 'BはAより後ろにしてください'; $('fErr').hidden = false; return; }
+          const wasCur = m.a === ab.a && m.b === ab.b;
+          Object.assign(m, { name, a: r1(a), b: r1(b) });
+          if (wasCur) { ab = { a: m.a, b: m.b }; persistAB(); }
+        }
+        save(); closeSheet(); renderLoopUI();
+      };
+      if (!isNew) armDelete($('fDel'), 'もう一度押すと削除', () => {
+        v.marks = v.marks.filter(x => x.id !== m.id); save(); closeSheet(); renderMarks();
+      });
+    });
+  }
+
+  /* ---------- メトロノーム ---------- */
+  const M = { ctx: null, running: false, timer: 0, next: 0, step: 0, queue: [], raf: 0, wake: null, taps: [] };
+  function setBpm(v) {
+    data.metro.bpm = clamp(Math.round(v) || 100, 30, 260);
+    save(); refreshMetroUI();
+  }
+  function click(t, level) {
+    const ctx = M.ctx;
+    const osc = ctx.createOscillator(), g = ctx.createGain();
+    osc.type = 'triangle';
+    osc.frequency.value = level === 2 ? 1760 : level === 1 ? 1175 : 880;
+    const vol = Math.max(0.0002, (data.metro.vol / 100) * (level === 2 ? 1 : level === 1 ? 0.75 : 0.38));
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(vol, t + 0.002);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + 0.055);
+    osc.connect(g).connect(ctx.destination);
+    osc.start(t); osc.stop(t + 0.07);
+  }
+  function sched() {
+    const m = data.metro;
+    while (M.next < M.ctx.currentTime + 0.12) {
+      const isBeat = M.step % m.sub === 0;
+      const bi = Math.floor(M.step / m.sub) % m.beats;
+      click(M.next, isBeat ? (bi === 0 ? 2 : 1) : 0);
+      M.queue.push({ t: M.next, bi, isBeat });
+      M.next += 60 / m.bpm / m.sub;
+      M.step = (M.step + 1) % (m.sub * m.beats);
+    }
+  }
+  function draw() {
+    while (M.queue.length && M.queue[0].t <= M.ctx.currentTime) {
+      const q = M.queue.shift();
+      if (q.isBeat) litBeat(q.bi);
+    }
+    M.raf = requestAnimationFrame(draw);
+  }
+  let litT = 0;
+  function litBeat(i) {
+    document.querySelectorAll('.beat-dot').forEach((d, k) => d.classList.toggle('lit', k === i));
+    document.querySelectorAll('.beat-mini').forEach(d => d.classList.toggle('lit', i >= 0));
+    clearTimeout(litT);
+    if (i >= 0) litT = setTimeout(() => {
+      document.querySelectorAll('.beat-dot.lit, .beat-mini.lit').forEach(d => d.classList.remove('lit'));
+    }, 110);
+  }
+  async function wakeOn() { try { if (navigator.wakeLock && !M.wake) { M.wake = await navigator.wakeLock.request('screen'); M.wake.addEventListener('release', () => { M.wake = null; }); } } catch {} }
+  function wakeOff() { try { M.wake && M.wake.release(); } catch {} M.wake = null; }
+  function mStart() {
+    if (!M.ctx) {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) { toast('このブラウザでは音を鳴らせません'); return; }
+      try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch {}
+      M.ctx = new AC();
+    }
+    M.ctx.resume && M.ctx.resume();
+    M.running = true; M.step = 0; M.queue = [];
+    M.next = M.ctx.currentTime + 0.08;
+    clearInterval(M.timer);
+    M.timer = setInterval(sched, 25); sched();
+    cancelAnimationFrame(M.raf); M.raf = requestAnimationFrame(draw);
+    wakeOn(); refreshMetroUI();
+  }
+  function mStop() {
+    M.running = false;
+    clearInterval(M.timer); cancelAnimationFrame(M.raf);
+    M.queue = []; litBeat(-1); wakeOff(); refreshMetroUI();
+  }
+  function restartBar() { if (M.running) { M.step = 0; M.queue = []; M.next = M.ctx.currentTime + 0.06; } }
+
+  function renderMetro() {
+    const m = data.metro;
+    $('beatsSeg').innerHTML = [2, 3, 4, 6].map(n => `<button data-b="${n}" aria-pressed="${m.beats === n}">${n}拍</button>`).join('');
+    $('subSeg').innerHTML = [[1, '4分'], [2, '8分'], [3, '3連'], [4, '16分']].map(([n, l]) => `<button data-s="${n}" aria-pressed="${m.sub === n}">${l}</button>`).join('');
+    $('volRange').value = m.vol;
+    const songs = data.songs.filter(s => s.bpm).sort((a, b) => RANK[a.status] - RANK[b.status] || b.created - a.created);
+    const drills = data.drills.filter(d => d.bpm);
+    const chips = arr => `<div class="chip-wrap">${arr.map(x => `<button class="chip-btn" data-pick="${x.bpm}" aria-pressed="false">${esc(x.title)}<span class="cnt">${x.bpm}</span></button>`).join('')}</div>`;
+    $('bpmPicks').innerHTML = (songs.length ? `<span class="pick-group">曲</span>${chips(songs)}` : '')
+      + (drills.length ? `<span class="pick-group">基礎練</span>${chips(drills)}` : '')
+      || '<p>曲や基礎練にBPMを登録すると、ここから呼び出せます。</p>';
+    refreshMetroUI();
+  }
+  const SUB_L = { 1: '4分', 2: '8分', 3: '3連', 4: '16分' };
+  function refreshMetroUI() {
+    const m = data.metro;
+    if ($('bpmNum')) {
+      $('bpmNum').textContent = m.bpm;
+      $('bpmRange').value = m.bpm;
+      $('mSub').textContent = `${m.beats}拍・${SUB_L[m.sub]}${M.running ? '・再生中' : ''}`;
+      const dots = $('beatDots');
+      if (dots.children.length !== m.beats) dots.innerHTML = Array.from({ length: m.beats }, (_, i) => `<span class="beat-dot${i ? '' : ' first'}"></span>`).join('');
+      const p = $('mPlay');
+      p.textContent = M.running ? 'ストップ' : 'スタート';
+      p.classList.toggle('running', M.running);
+      p.classList.toggle('done', !M.running);
+      document.querySelectorAll('#bpmPicks [data-pick]').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.pick === m.bpm)));
+    }
+    const dm = $('dMetro'), it = getItem();
+    if (dm && it) {
+      const on = M.running && it.bpm && m.bpm === it.bpm;
+      dm.setAttribute('aria-pressed', String(!!on));
+      dm.innerHTML = on ? '<span class="beat-mini"></span>止める' : it.bpm ? `${ICON.play}このBPMで鳴らす` : 'BPM未設定';
+    }
+  }
+  function holdRepeat(btn, fn) {
+    let t1 = 0, t2 = 0;
+    const stop = () => { clearTimeout(t1); clearInterval(t2); };
+    btn.addEventListener('pointerdown', e => {
+      e.preventDefault(); fn();
+      t1 = setTimeout(() => { t2 = setInterval(fn, 70); }, 420);
+    });
+    ['pointerup', 'pointerleave', 'pointercancel'].forEach(n => btn.addEventListener(n, stop));
+    btn.addEventListener('click', e => { if (e.detail === 0) fn(); });
+  }
+  holdRepeat($('bpmMinus'), () => setBpm(data.metro.bpm - 1));
+  holdRepeat($('bpmPlus'), () => setBpm(data.metro.bpm + 1));
+  $('bpmRange').addEventListener('input', e => setBpm(+e.target.value));
+  $('mPlay').addEventListener('click', () => (M.running ? mStop() : mStart()));
+  $('tapBtn').addEventListener('click', () => {
+    const now = performance.now();
+    M.taps = M.taps.filter(t => now - t < 2500);
+    M.taps.push(now);
+    if (M.taps.length > 5) M.taps.shift();
+    if (M.taps.length >= 2) {
+      const iv = (M.taps[M.taps.length - 1] - M.taps[0]) / (M.taps.length - 1);
+      setBpm(60000 / iv);
+    }
+  });
+  $('beatsSeg').addEventListener('click', e => {
+    const b = e.target.closest('[data-b]'); if (!b) return;
+    data.metro.beats = +b.dataset.b; save(); restartBar(); renderMetro();
+  });
+  $('subSeg').addEventListener('click', e => {
+    const b = e.target.closest('[data-s]'); if (!b) return;
+    data.metro.sub = +b.dataset.s; save(); restartBar(); renderMetro();
+  });
+  $('volRange').addEventListener('input', e => { data.metro.vol = +e.target.value; save(); });
+  $('bpmPicks').addEventListener('click', e => {
+    const b = e.target.closest('[data-pick]'); if (b) setBpm(+b.dataset.pick);
+  });
+
+  /* ---------- 設定・データ(右上の歯車) ---------- */
+  function fmtDateTime(iso) {
+    const d = new Date(iso); if (isNaN(d)) return '';
+    return `${d.getFullYear()}/${d.getMonth() + 1}/${d.getDate()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  }
+  function renderData() {
+    $('lastExport').textContent = data.meta.lastExport ? `最後に書き出した日時:${fmtDateTime(data.meta.lastExport)}` : 'まだ書き出していません。';
+    $('allStats').innerHTML = `
+      <div class="stat"><b>${data.songs.length}</b><span>課題曲</span></div>
+      <div class="stat"><b>${data.songs.filter(s => s.status === 'done').length}</b><span>弾ける</span></div>
+      <div class="stat"><b>${data.drills.length}</b><span>基礎練</span></div>`;
+  }
+  const exportText = () => JSON.stringify(data, null, 2);
+  const isTouch = () => matchMedia('(pointer: coarse)').matches;
+  function openSettings() {
+    openSheet($('settingsTpl').innerHTML, () => { bindData(); renderData(); });
+  }
+  document.querySelectorAll('[data-act="settings"]').forEach(b => b.addEventListener('click', openSettings));
+  function bindData() {
+    $('exportBtn').onclick = async () => {
+      data.meta.lastExport = new Date().toISOString();
+      save();
+      const name = `bass-practice-${today()}.json`;
+      const text = exportText();
+      let file = null;
+      try { file = new File([text], name, { type: 'application/json' }); } catch {}
+      if (file && isTouch() && navigator.canShare && navigator.canShare({ files: [file] })) {
+        try { await navigator.share({ files: [file] }); renderData(); return; }
+        catch (e) { if (e && e.name === 'AbortError') { renderData(); return; } }
+      }
+      try {
+        const url = URL.createObjectURL(file || new Blob([text], { type: 'application/json' }));
+        const a = document.createElement('a');
+        a.href = url; a.download = name;
+        document.body.appendChild(a); a.click();
+        setTimeout(() => { URL.revokeObjectURL(url); a.remove(); }, 1500);
+        toast('書き出しました');
+      } catch { toast('書き出せませんでした。「コピー」を使ってください'); }
+      renderData();
+    };
+    $('copyBtn').onclick = async () => {
+      const area = $('copyArea');
+      const text = exportText();
+      area.value = text;
+      try { await navigator.clipboard.writeText(text); toast('コピーしました'); area.hidden = true; }
+      catch { area.hidden = false; area.focus(); area.select(); toast('自動でコピーできませんでした。下の欄を選択してコピーしてください'); }
+    };
+    $('importFile').addEventListener('change', e => {
+      const f = e.target.files && e.target.files[0];
+      e.target.value = '';
+      if (!f) return;
+      const rd = new FileReader();
+      rd.onload = () => {
+        const box = $('importPreview');
+        let v = null;
+        try { v = JSON.parse(rd.result); } catch {}
+        if (!valid(v)) {
+          box.innerHTML = '<b>このファイルは読み込めません</b><p>ベース練習帳で書き出したJSONファイルを選んでください。</p>';
+          box.hidden = false; return;
+        }
+        const marks = [...v.songs, ...v.drills].reduce((a, x) => a + (Array.isArray(x.videos) ? x.videos.reduce((b, y) => b + (Array.isArray(y.marks) ? y.marks.length : 0), 0) : 0), 0);
+        box.innerHTML = `<b>${esc(f.name)}</b>
+          <p>課題曲 ${v.songs.length}曲・基礎練 ${v.drills.length}件・ブックマーク ${marks}件${v.meta && v.meta.lastExport ? `(${fmtDateTime(v.meta.lastExport)} 書き出し)` : ''}</p>
+          <p>今このブラウザにあるデータは消えて、このファイルの内容に置き換わります。</p>
+          <div class="row-btns"><button class="btn" id="impCancel">やめる</button><button class="btn done" id="impOk">置き換える</button></div>`;
+        box.hidden = false;
+        box.querySelector('#impCancel').onclick = () => { box.hidden = true; };
+        box.querySelector('#impOk').onclick = () => {
+          data = migrate(v); save();
+          closeSheet();
+          if (detail) closeDetail();
+          renderSongs(); renderDrills(); renderMetro(); toast('読み込みました');
+        };
+      };
+      rd.readAsText(f);
+    });
+  }
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible' && M.running) wakeOn();
+  });
+
+  renderSongs();
+  renderMetro();
+  show();
+})();
+
+if ('serviceWorker' in navigator && location.protocol === 'https:') {
+  window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+}
+</script>
+</body>
+</html>
